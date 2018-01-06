@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity()   {
     var meuCarrinho: ArrayList<String> = ArrayList()
     var meuCarrinhoPrice: ArrayList<Double> = ArrayList()
     var totalPrice: Double? = 0.0
+    var finalPrice: Double? = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,11 +68,15 @@ class MainActivity : AppCompatActivity()   {
     }//end of onCreate
 
     fun totalToPay(){
+        totalPrice = 0.0
         for (priceItem in 0.until(meuCarrinhoPrice.size)){
-            totalPrice = totalPrice!!.plus(meuCarrinhoPrice[priceItem])
+            totalPrice = (totalPrice?.plus(meuCarrinhoPrice[priceItem]))
         }
-        tVtotalSelected.setText(totalPrice.toString())
+        finalPrice = totalPrice
+        tVtotalSelected.setText("R$: " + "%.2f".format(finalPrice))
     }
+
+
 
     fun startList(){
         //listview
