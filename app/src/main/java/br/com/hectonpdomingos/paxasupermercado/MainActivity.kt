@@ -1,5 +1,6 @@
 package br.com.hectonpdomingos.paxasupermercado
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -17,9 +18,12 @@ import org.json.JSONArray
 import org.json.JSONException
 import android.widget.AdapterView.OnItemClickListener
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_quantity.*
 
 
 class MainActivity : AppCompatActivity()   {
+
+
 
     var produtoLink: RequestQueue? = null
     val linkPromocao = "http://192.168.88.10/data.php"
@@ -42,16 +46,27 @@ class MainActivity : AppCompatActivity()   {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+
+
+        val btnProsseguir: Button = findViewById(R.id.btnProsseguir) as Button
+        btnProsseguir.setOnClickListener(View.OnClickListener {
+            val btnProsseguir = Intent(this, cart::class.java)
+            btnProsseguir.putStringArrayListExtra("Prod", meuCarrinho)
+            startActivity(btnProsseguir)
+        })
+
+
+        /////////////////////
+
         //button myCart
         val btnMyCart: ImageButton = findViewById(R.id.cartButton) as ImageButton
         btnMyCart.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this@MainActivity, cart::class.java)
-            val bundle = Bundle()
-
+            val intent = Intent(this, cart::class.java)
             intent.putStringArrayListExtra("Prod", meuCarrinho)
-
             startActivity(intent)
         })
+
 
         //Display total
         var tVTotalSelected: TextView = findViewById(R.id.tVtotalSelected) as TextView
@@ -65,20 +80,63 @@ class MainActivity : AppCompatActivity()   {
 
 
 
-    }//end of onCreate
+        }//end of onCreate
 
-    fun totalToPay(){
+      fun totalToPay(){
         totalPrice = 0.0
         for (priceItem in 0.until(meuCarrinhoPrice.size)){
             totalPrice = (totalPrice?.plus(meuCarrinhoPrice[priceItem]))
         }
         finalPrice = totalPrice
         tVtotalSelected.setText("R$: " + "%.2f".format(finalPrice))
-    }
+      }
 
 
 
-    fun startList(){
+fun setQuantity(){
+
+
+    //Quantity
+    val mBuilder = AlertDialog.Builder(this@MainActivity)
+    val mView = layoutInflater.inflate(R.layout.activity_quantity, null)
+
+    //BTN and Textview pop up
+    val tVQty = mView.findViewById(R.id.qty) as EditText
+    val btnQty = mView.findViewById(R.id.btnQty) as Button
+
+    mBuilder.setView(mView)
+    val dialog = mBuilder.create()
+    dialog.show()
+
+    btnQty.setOnClickListener(View.OnClickListener {
+        if (!tVQty.text.toString().isEmpty()) {
+
+            dialog.dismiss()
+            recreate()
+        } else {
+
+
+
+        }
+
+
+    })
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+//inflate productList
+       fun startList(){
         //listview
         val listaProdutos = findViewById(R.id.ListViewlistaProdutos) as ListView
         val adapter = ArrayAdapter<String>(this,
@@ -87,22 +145,32 @@ class MainActivity : AppCompatActivity()   {
         listaProdutos.setAdapter(adapter)
 
 
+
+
+
+
         //Button to select items
         listaProdutos.onItemClickListener = object : OnItemClickListener {
             override fun onItemClick(parent: AdapterView<*>, view: View,
                                      position: Int, id: Long) {
 
+
                 // ListView Clicked item value
                 val itemValue = listaProdutos.getItemAtPosition(position) as String
-
                 numberItensCart = numberItensCart + 1
                 meuCarrinho.add(arrayProdutos[position])
                 //tVtotalSelected.setText(priceList[position].toString())
                 meuCarrinhoPrice.add(priceList[position])
 
+
+
+                //calculate the item qty
                totalToPay()
                 //Show +1 in the cart icon
                 cartItensPortrain.setText(numberItensCart.toString())
+
+                //setqty
+               // setQuantity()
                 // Show Alert
                 Toast.makeText(applicationContext,
                         "Position :$position  ListItem : $itemValue", Toast.LENGTH_LONG)
@@ -135,6 +203,9 @@ class MainActivity : AppCompatActivity()   {
                                //adding name of the product selected
                                arrayProdutos.add(prod.toString() )
                               priceList.add(prodPrice)
+
+
+
                            }
 
                         } catch (e: JSONException) {

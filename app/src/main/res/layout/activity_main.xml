@@ -23,7 +23,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:textAlignment="gravity"
-        app:layout_constraintBottom_toTopOf="@+id/btProsseguir"
+        app:layout_constraintBottom_toTopOf="@+id/btnProsseguir"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -45,7 +45,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <Button
-        android:id="@+id/btProsseguir"
+        android:id="@+id/btnProsseguir"
         android:layout_width="235dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
